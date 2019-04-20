@@ -20,14 +20,25 @@ defmodule Ueberauth.Strategy.Discord do
     else
       opts
     end
-    opts = Keyword.put(opts, :redirect_uri, callback_url(conn))
+
+    redirect_uri =
+      :ueberauth
+      |> Application.fetch_env!(Ueberauth.Strategy.Discord.OAuth)
+      |> Keyword.get(:redirect_uri) || callback_url(conn)
+
+    opts = Keyword.put(opts, :redirect_uri, redirect_uri)
 
     redirect!(conn, Ueberauth.Strategy.Discord.OAuth.authorize_url!(opts))
   end
 
   @doc false
   def handle_callback!(%Plug.Conn{params: %{"code" => code}} = conn) do
-    opts = [redirect_uri: callback_url(conn)]
+    redirect_uri =
+      :ueberauth
+      |> Application.fetch_env!(Ueberauth.Strategy.Discord.OAuth)
+      |> Keyword.get(:redirect_uri) || callback_url(conn)
+
+    opts = [redirect_uri: redirect_uri]
     token = Ueberauth.Strategy.Discord.OAuth.get_token!([code: code], opts)
 
     if token.access_token == nil do
@@ -194,5 +205,4 @@ defmodule Ueberauth.Strategy.Discord do
   defp option(conn, key) do
     Dict.get(options(conn), key, Dict.get(default_options, key))
   end
-
 end
