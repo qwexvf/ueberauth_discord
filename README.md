@@ -12,7 +12,7 @@ For additional documentation on Discord's OAuth implementation see [discord-oaut
 
     ```elixir
     def deps do
-      [{:ueberauth_discord, "~> 0.3"}]
+      [{:ueberauth_discord, github: "qwexvf/ueberauth_discord"}]
     end
     ```
 
@@ -39,6 +39,7 @@ For additional documentation on Discord's OAuth implementation see [discord-oaut
     config :ueberauth, Ueberauth.Strategy.Discord.OAuth,
       client_id: System.get_env("DISCORD_CLIENT_ID"),
       client_secret: System.get_env("DISCORD_CLIENT_SECRET")
+      redirect_uri: System.get_env("DISCORD_REDIRECT_URI")
     ```
 
 1.  Include the Überauth plug in your controller:
